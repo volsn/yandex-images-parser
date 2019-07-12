@@ -10,7 +10,8 @@ def find_similar_images(path, minW, minH, quantity):
     
     images = []
     
-    driver = webdriver.Chrome() 
+    driver = webdriver.Chrome()
+    driver_image = webdriver.Chrome()
     driver.get('https://yandex.ru/images/')
     sleep(randint(1,2))
     
@@ -52,7 +53,7 @@ def find_similar_images(path, minW, minH, quantity):
                 image = image.find_element_by_css_selector('.serp-item__link').get_attribute('href')
                 
                 source = get_image_source(image)
-                save_image(source, i)
+                save_image(source, i, driver_image)
                 i += 1
                 
                 if i >= quantity:
@@ -62,27 +63,25 @@ def find_similar_images(path, minW, minH, quantity):
         sleep(randint(1,2))
         
             
-    driver.close()    
+    driver.close()
+    driver_image.close()
     
     return images
 
 
-def get_image_source(image):
+def get_image_source(image, driver):
 
-    driver = webdriver.Chrome() 
     driver.get(image)
     sleep(3)
 
     try:
         roi = driver.find_element_by_css_selector('.sizes')
         source = roi.find_element_by_css_selector('.button2').get_attribute('href')
-        driver.close()
-        
+
         return source
 
     except:
         
-        driver.close()
         return 'Falsed'
 
 
